@@ -10,7 +10,7 @@ import time
 import psutil
 
 #SERVER = ("cron", 94733) TODO
-SERVER = ("localhost", "5678")
+SERVER = ("localhost", 5678)
 
 EDITORS = [
     "emacs",
@@ -75,7 +75,7 @@ async def send_data(server):
 
 def main():
     logging.basicConfig(level=logging.INFO, format=LOG_FORMAT)
-    logging.info("Starting per-host daemon")
+    logging.info("Starting katecount per-host daemon")
 
     if sys.platform == 'win32':
         loop = asyncio.ProactorEventLoop()
