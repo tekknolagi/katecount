@@ -8,6 +8,8 @@ import string
 import struct
 import subprocess
 import sys
+import logging
+
 
 def ascii_range(start, end):
     return (chr(x) for x in range(ord(start), ord(end)))
@@ -22,9 +24,10 @@ HOSTS = (
 CLIENT_DIR = "katecount"
 CLIENT_SCRIPT = os.path.join(CLIENT_DIR, "per_host.py")
 CLIENT_LOG_DIR = os.path.join(CLIENT_DIR, "logs")
-STATS_PATH = os.path.join(Path.home(), "public_html", "editors.json")
+STATS_PATH = os.path.join(str(Path.home()), "public_html", "editors.json")
 UPDATE_INTERVAL = 5
 LISTEN_PORT = 94733
+LOG_FORMAT = "%(asctime)-15s %(message)s"
 
 
 class Host:
@@ -106,7 +109,7 @@ def main():
     stats = {}
     hosts = {name: Host(name) for name in HOSTS}
 
-    server = loop.create_server(lambda: ClientLink(hosts, stats), None, LISTEN_PORT);
+    server = loop.create_server(lambda: ClientLink(hosts, stats), None, LISTEN_PORT)
     update = loop.create_task(write_stats_loop(STATS_PATH, stats))
 
     loop.create_task(server)
