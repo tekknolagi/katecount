@@ -7,6 +7,17 @@
         <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
 
         <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <style>
+            body {
+                width: 600px;
+            }
+            @media only screen and (max-width: 800px) {
+                body {
+                    width: 100%;
+                }
+            }
+        </style>
         <title>KateCount</title>
     </head>
     <body>
@@ -16,7 +27,8 @@
           <canvas id="chart" width="400" height="400"></canvas>
         </div>
         <p><b>What is this?</b></p>
-        <p>This counts the editors in use on all Halligan machines, live (ish).</p>
+        <p>This counts the editors in use on all <span id="num-machines"></span>
+           Halligan machines, live (ish).</p>
 
         <p><b>Know how to generate nice-looking pie charts?</b></p>
         <p>I suck at D3. Hit me up at <code>mberns01 at cs dot tufts dot

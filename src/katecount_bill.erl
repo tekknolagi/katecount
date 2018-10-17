@@ -20,7 +20,11 @@ handle_info(check, OldTimer) ->
             false -> 
                 Stats
         end,
-  Editors = #{summary => Mod, available => daemon:tracked()},
+  Editors = #{
+    summary => Mod,
+    available => daemon:tracked(),
+    num_nodes => length(nodes())
+   },
   EditorsJson = jsone:encode(Editors),
   % io:format("Dumping json... ~w~n", [EditorsJson]),
   {ok, Target} = file:open('/h/mberns01/public_html/editors.json',

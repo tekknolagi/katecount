@@ -88,6 +88,8 @@ function get_data() {
       }
       make_pie_chart($alist, tracked);
       $("#rankings").html($list);
+      console.log(JSON.stringify(editors));
+      $("#num-machines").html("(" + editors.num_nodes + ")");
     });
 }
 
