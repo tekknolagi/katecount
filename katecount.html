@@ -1,0 +1,50 @@
+<html>
+    <head>
+        <script src="https://d3js.org/d3.v4.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.1/Chart.bundle.min.js"></script>
+
+        <script src="https://d3js.org/d3-interpolate.v1.min.js"></script>
+        <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
+
+        <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+        <title>KateCount</title>
+    </head>
+    <body>
+        <p>Most popular editors right now:</p>
+        <div id="rankings"></div>
+        <div id="container" style="width: 400px; height: 400px; padding-bottom: 50px;">
+          <canvas id="chart" width="400" height="400"></canvas>
+        </div>
+        <p><b>What is this?</b></p>
+        <p>This counts the editors in use on all Halligan machines, live (ish).</p>
+
+        <p><b>Know how to generate nice-looking pie charts?</b></p>
+        <p>I suck at D3. Hit me up at <code>mberns01 at cs dot tufts dot
+            edu</code>.</p>
+
+        <p><b>Why are the numbers so low?</b></p>
+        <p>Hold on to your pants. The server is probably restarting and it
+           hasn't launched a monitor on all the hosts yet.</p>
+
+        <p><b>Is this open source?</b></p>
+        <p>Yes, at <a
+            href="https://github.com/tekknolagi/katecount"><code>tekknolagi/katecount</code></a>
+        if -- heaven help you -- you ever need to use this.</p>
+
+        <p><b>Does this have an API?</b></p>
+        <p>Yes, at <a href="/~mberns01/editors.json"><code>/~mberns01/editors.json</code></a>
+        -- but there is zero
+        SLA.</p>
+
+        <p><b>Think you use an unconventional editor and don't see it
+            here?</b></p>
+        <p>Ping me at the above email address and I can add it.</p>
+
+        <p><b>Why did you make this?</b></p>
+        <p>A fun conversation with my friend Tom made us curious.</p>
+
+        <p><b>Why are there so many questions here?</b></p>
+        <p>I don't know... they're fun to write.</p>
+    </body>
+    <script src="getjson.js"></script>
+</html>
