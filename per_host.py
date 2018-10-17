@@ -41,17 +41,18 @@ class ConnectionError(Exception):
     pass
 
 
-async def connect(server):
+@asyncio.coroutine
+def connect(server):
     for _ in range(RECONNECT_COUNT):
         try:
-            _, writer = await asyncio.open_connection(server[0], server[1])
+            _, writer = yield from asyncio.open_connection(server[0], server[1])
         except OSError as err:
             logging.warning(
                 "Failed to connect (%s), retrying in %d seconds",
                 err.strerror,
                 RECONNECT_INTERVAL
             )
-            await asyncio.sleep(RECONNECT_INTERVAL)
+            yield from asyncio.sleep(RECONNECT_INTERVAL)
         else:
             return writer
 
@@ -59,18 +60,19 @@ async def connect(server):
     raise ConnectionError()
 
 
-async def send_data(server):
+@asyncio.coroutine
+def send_data(server):
     loop = asyncio.get_event_loop()
 
     try:
-        writer = await connect(server)
+        writer = yield from connect(server)
     except ConnectionError:
         loop.stop()
         return
 
     while True:
         writer.write(json.dumps(get_counts()).encode())
-        await asyncio.sleep(UPDATE_INTERVAL)
+        yield from asyncio.sleep(UPDATE_INTERVAL)
 
 
 def main():

@@ -15,16 +15,18 @@ def ascii_range(start, end):
     return (chr(x) for x in range(ord(start), ord(end)))
 
 HOSTS = (
-    ["lab116" + n for n in ascii_range('a', 'x')] +
-    ["lab118" + n for n in ascii_range('a', 'x')] +
-    ["lab120" + n for n in ascii_range('a', 'v')] +
-    ["vm-hw0" + n for n in ascii_range('0', '9')]
+    # ["lab116" + n for n in ascii_range('a', 'x')] +
+    # ["lab118" + n for n in ascii_range('a', 'x')] +
+    # ["lab120" + n for n in ascii_range('a', 'v')] +
+    ["vm-hw0" + n for n in ascii_range('0', '9')] +
+    []
 )
 
+HOME = str(Path.home())
 CLIENT_DIR = "katecount"
-CLIENT_SCRIPT = os.path.join(CLIENT_DIR, "per_host.py")
-CLIENT_LOG_DIR = os.path.join(CLIENT_DIR, "logs")
-STATS_PATH = os.path.join(str(Path.home()), "public_html", "editors.json")
+CLIENT_SCRIPT = os.path.join(HOME, CLIENT_DIR, "per_host.py")
+CLIENT_LOG_DIR = os.path.join(HOME, CLIENT_DIR, "logs")
+STATS_PATH = os.path.join(HOME, "public_html", "editors.json")
 UPDATE_INTERVAL = 5
 LISTEN_PORT = 94733
 LOG_FORMAT = "%(asctime)-15s %(message)s"
@@ -65,6 +67,7 @@ class ClientLink(LenPrefParser):
         self.transport = None
         self.hosts = hosts
         self.stats = stats
+        print("Initialized ClientLink")
 
     def connection_made(self, transport):
         self.transport = transport
@@ -81,18 +84,19 @@ def spawn_on(hostname):
     subprocess.run([
         "ssh",
         hostname,
-        "nohup {} >>{} 2>&1".format(
+        "LD_LIBRARY_PATH=/usr/sup/lib/ nohup {} >>{} 2>&1".format(
             CLIENT_SCRIPT,
             os.path.join(CLIENT_LOG_DIR, "{}.log".format(hostname))
         )
     ])
 
 
-async def write_stats_loop(path, stats):
+@asyncio.coroutine
+def write_stats_loop(path, stats):
     while True:
         with open(path, 'w') as f:
             json.dump(stats, f)
-        await asyncio.sleep(UPDATE_INTERVAL)
+        yield from asyncio.sleep(UPDATE_INTERVAL)
 
 
 def main():
@@ -112,6 +116,9 @@ def main():
     server = loop.create_server(lambda: ClientLink(hosts, stats), None, LISTEN_PORT)
     update = loop.create_task(write_stats_loop(STATS_PATH, stats))
 
+    for n, h in hosts.items():
+        spawn_on(n)
+
     loop.create_task(server)
     loop.create_task(update)
 
@@ -122,6 +129,8 @@ def main():
     finally:
         loop.run_until_complete(loop.shutdown_asyncgens())
         loop.close()
+
+    return 0
 
 
 if __name__ == '__main__':
