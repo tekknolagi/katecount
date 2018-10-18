@@ -8,6 +8,12 @@
 
         <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <!-- for line chart... -->
+        <!-- https://codepen.io/anon/pen/ePMpdd -->
+        <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+        <script type="text/javascript">
+          google.charts.load('current', {'packages':['corechart']});
+        </script>
         <style>
             body {
                 width: 600px;
@@ -26,6 +32,7 @@
         <div id="container" style="width: 400px; height: 400px; padding-bottom: 50px;">
           <canvas id="chart" width="400" height="400"></canvas>
         </div>
+        <div id="areaChart" width="600px"></div>
         <p><b>What is this?</b></p>
         <p>This counts the editors in use on all <span id="num-machines"></span>
            Halligan machines, live (ish).</p>

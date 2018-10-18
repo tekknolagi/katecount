@@ -61,6 +61,64 @@ function make_pie_chart (alist, tracked) {
   chart.update();
 }
 
+function date_from_unix(unix_timestamp) {
+    var date = new Date(unix_timestamp*1000);
+    // Hours part from the timestamp
+    var hours = date.getHours();
+    // Minutes part from the timestamp
+    var minutes = "0" + date.getMinutes();
+    // Seconds part from the timestamp
+    var seconds = "0" + date.getSeconds();
+
+    // Will display time in 10:30:23 format
+    return hours + ':' + minutes.substr(-2) + ':' + seconds.substr(-2);
+}
+
+// function sortByUsage(editors, summary) {
+//     // l.sort(function (a, b) { return b[1] - a[1]; });
+//     var eds = editors;
+//     eds.sort(function(a, b) {
+//         return summary[a] - summary[b] });
+// }
+
+function v(i) {
+return i === undefined ? 0 : i;
+}
+
+function make_line_chart(history, tracked, summary) {
+    var table = [];
+    tracked.sort(function(a,b) {
+        return v(summary[a]) - v(summary[b]);
+    });
+    table.push(["Time"].concat(tracked));
+    var intv = 1;
+    var timeSpanSeconds = history[history.length-1].timestamp - history[0].timestamp;
+    for (var i = 0; i < history.length; i+=intv) {
+        var dict_row = history[i];
+        // var row = [date_from_unix(dict_row.timestamp)];
+        var row = [''];
+        for (var j = 0; j < tracked.length; j++) {
+            var ed = tracked[j];
+            var res = dict_row.summary[ed];
+            row.push(res === undefined ? 0 : res);
+        }
+        table.push(row);
+    }
+
+    var data = google.visualization.arrayToDataTable(table);
+
+    var options = {
+      title: 'Editor Usage Over Time (' + timeSpanSeconds/60.0/60.0 + ' hrs)',
+      hAxis: {title: 'Time',  titleTextStyle: {color: '#333'}},
+      vAxis: {minValue: 0, direction: 1},
+      isStacked: true,
+      aggregationTarget: 'category',
+    };
+
+    var chart = new google.visualization.AreaChart(document.getElementById('areaChart'));
+    chart.draw(data, options);
+}
+
 function get_data() {
   d3.request("/~mberns01/editors.json")
     .mimeType("application/json")
@@ -74,10 +132,8 @@ function get_data() {
       var $alist = Object.keys(editors.summary).map(function (key) {
         return [key, editors.summary[key]];
       });
-      $alist.sort(function (a, b) {
-        // Descending order
-        return b[1] - a[1];
-      });
+      // Descending order
+      $alist.sort(function (a, b) { return b[1] - a[1]; });
       var $list = $("<ol>", {id: "editorRankings"});
       for (var i = 0; i < $alist.length; i++) {
         var kv = $alist[i];
@@ -87,8 +143,8 @@ function get_data() {
         $list.append($li);
       }
       make_pie_chart($alist, tracked);
+      make_line_chart(editors.history, tracked, editors.summary);
       $("#rankings").html($list);
-      console.log(JSON.stringify(editors));
       $("#num-machines").html("(" + editors.num_nodes + ")");
     });
 }

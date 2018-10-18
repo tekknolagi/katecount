@@ -124,7 +124,7 @@ machines() ->
               [ lab("118", [N]) || N <- lists:seq($a, $z) ] ++
               [ lab("120", [N]) || N <- lists:seq($a, $z) ] ++
               [ vm(N) || N <- lists:seq(0, 9) ] ++
-              [ "white-hole", "red-giant" ]).
+              [ "white-hole", "black-hole", "linux", "red-giant" ]).
 
 start_link() ->
     % spawn_link(daemon, boot, []),

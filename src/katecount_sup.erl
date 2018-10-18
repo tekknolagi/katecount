@@ -45,8 +45,7 @@ init([]) ->
     Bill =
       ?CHILD(katecount_bill, katecount_bill, [], transient, worker),
     Children = [StateHandler, Bill],
-    daemon:boot(),
-    % daemon:boot('vm-hw02'),
+    % daemon:boot(),
     {ok, {RestartStrategy, Children}}.
 
 
